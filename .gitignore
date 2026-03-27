@@ -1,0 +1,28 @@
+﻿# Large data files - do not push to GitHub
+news_dataset.json
+output/news_labeled_all.csv
+output/news_labeled_clean.csv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Agent skills (not part of this project)
+.agent/
+
+# Large cache files
+notebooks/segmented_cache.csv
+notebooks/*.cache
+*.cache.csv
