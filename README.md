@@ -36,6 +36,9 @@ data_labeling.ipynb   ←  Gán nhãn dựa trên topic
       │  results_df (in-memory)
       ▼
 27_3_2026.ipynb       ←  H4: Bigram/Trigram  |  H7: Word Segmentation
+      │
+      ▼
+03_04_2026_.ipynb     ←  Word Embedding (Word2Vec) + LR/SVM
 ```
 
 ---
@@ -51,7 +54,8 @@ Classification_news/
 └── notebooks/
     ├── data_labeling.ipynb    # Bước 1: Gán nhãn
     ├── 20_03_2026.ipynb       # Bước 2: Baseline experiments
-    └── 27_3_2026.ipynb        # Bước 3: Advanced experiments
+    ├── 27_3_2026.ipynb        # Bước 3: Advanced experiments
+    └── 03_04_2026_.ipynb      # Bước 4: Word embedding experiments (Word2Vec)
 ```
 
 ---
@@ -65,6 +69,7 @@ Classification_news/
 | scikit-learn | ≥ 1.3 |
 | numpy | ≥ 1.24 |
 | underthesea | ≥ 6.8 (cho H7) |
+| gensim | ≥ 4.3 (cho Word2Vec) |
 
 ---
 
@@ -83,8 +88,8 @@ python -m venv .venv
 # Cài thư viện cơ bản
 pip install pandas numpy scikit-learn
 
-# Cài underthesea (bắt buộc cho notebook 27_3_2026)
-pip install underthesea
+# Cài underthesea (bắt buộc cho notebook 27_3_2026) và gensim (cho Word2Vec)
+pip install underthesea gensim
 ```
 
 > **Lưu ý Windows:** `underthesea` yêu cầu Visual C++ Build Tools.  
@@ -151,6 +156,14 @@ jupyter notebook notebooks/27_3_2026.ipynb
 
 > ⚠️ **Yêu cầu:** Cell so sánh H4.3 và H7 cần `results_df` được định nghĩa — nhớ chạy lại các cell baseline trong notebook này trước khi chạy các cell so sánh.
 
+### Bước 4 — Word Embedding experiments
+
+```bash
+jupyter notebook notebooks/03_04_2026_.ipynb
+```
+
+Chạy toàn bộ cell. Notebook này áp dụng Word2Vec để tạo vector biểu diễn văn bản và huấn luyện với LogisticRegression và SVM. Quá trình tiền xử lý sử dụng lại/tạo mới cache tách từ `segmented_cache.csv` để tiết kiệm thời gian.
+
 ---
 
 ## Kết quả thực nghiệm
@@ -180,6 +193,17 @@ Tách từ tiếng Việt bằng `underthesea.word_tokenize` trước khi vector
 
 > Kết quả chi tiết: xem cell tổng hợp cuối `27_3_2026.ipynb`.
 
+### Word Embedding (03_04_2026_.ipynb)
+
+Sử dụng Word2Vec để train embedding và lấy trung bình (average vectors) kết hợp với các mô hình classification cơ bản.
+
+| Vectorizer | Model | Accuracy | F1 (class 1) |
+|---|---|---|---|
+| Word2Vec (avg) | LogisticRegression | ~0.9415 | ~0.6457 |
+| Word2Vec (avg) | SVM | ~0.9421 | ~0.6365 |
+
+**Nhận xét:** So với TF-IDF baseline, Word2Vec ở dạng lấy trung bình (average) chưa mang lại F1-score vượt trội (~0.64 so với ~0.84 của baseline). Có thể cần tinh chỉnh dimension, window size, hoặc dùng kiến trúc sâu hơn (LSTM, BERT) để tối ưu khả năng biểu diễn của word embedding.
+
 ---
 
 ## Chi tiết các hypothesis
@@ -190,6 +214,7 @@ Tách từ tiếng Việt bằng `underthesea.word_tokenize` trước khi vector
 | **H4** | Mở rộng N-gram: bigram `(1,2)`, trigram `(1,3)` | `27_3_2026.ipynb` |
 | **H4.3** | So sánh H4 với baseline | `27_3_2026.ipynb` |
 | **H7** | Tiền xử lý: word segmentation (underthesea) | `27_3_2026.ipynb` |
+| **Word2Vec** | Biểu diễn văn bản bằng Word embedding trung bình (gensim Word2Vec) | `03_04_2026_.ipynb` |
 
 ---
 
